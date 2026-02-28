@@ -1,0 +1,104 @@
+[project]
+name = "dadosgovbr-mcp"
+version = "0.1.0"
+description = "Servidor MCP para dados abertos do Brasil - Portal SP e Portal Federal"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "Contribuidores do dadosgovbr-mcp" }]
+keywords = ["mcp", "dados-abertos", "brasil", "open-data", "governo"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+dependencies = [
+    "mcp[cli]>=1.9.0",
+    "httpx>=0.28.0",
+    "openpyxl>=3.1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+    "pytest-httpx>=0.30.0",
+    "ruff>=0.9.0",
+    "ty>=0.0.1a6",
+    "pre-commit>=3.0.0",
+]
+
+[project.urls]
+Repository = "https://github.com/seu-usuario/dadosgovbr-mcp"
+"Portal SP" = "https://dadosabertos.sp.gov.br"
+"Portal Federal" = "https://dados.gov.br"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["helpers", "tools"]
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Ruff - Linting e Formatação
+# ──────────────────────────────────────────────────────────────────────────────
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "UP",  # pyupgrade
+    "BLE", # flake8-blind-except (comentado onde necessário)
+    "RUF", # ruff-specific rules
+]
+ignore = [
+    "E501",  # line-too-long (handled by formatter)
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["helpers", "tools"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Pytest
+# ──────────────────────────────────────────────────────────────────────────────
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+markers = [
+    "integration: testes de integração (requerem rede)",
+    "unit: testes unitários (sem rede)",
+]
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Ty - Type Checking
+# ──────────────────────────────────────────────────────────────────────────────
+
+[tool.ty]
+# Diretórios a verificar
+include = ["helpers", "tools", "main.py"]
+# Ignorar importações de terceiros não tipadas
+ignore-missing-stubs = true

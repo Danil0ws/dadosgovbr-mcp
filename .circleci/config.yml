@@ -1,0 +1,143 @@
+version: 2.1
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Pipeline CI para dadosgovbr-mcp
+# ──────────────────────────────────────────────────────────────────────────────
+
+orbs:
+  python: circleci/python@2.1.1
+
+executors:
+  python-executor:
+    docker:
+      - image: cimg/python:3.11
+    resource_class: small
+
+jobs:
+  lint:
+    executor: python-executor
+    steps:
+      - checkout
+      - run:
+          name: Instalar uv
+          command: |
+            curl -LsSf https://astral.sh/uv/install.sh | sh
+            echo 'export PATH="$HOME/.cargo/bin:$PATH"' >> $BASH_ENV
+            source $BASH_ENV
+      - restore_cache:
+          keys:
+            - uv-v1-{{ checksum "uv.lock" }}
+            - uv-v1-
+      - run:
+          name: Instalar dependências
+          command: uv sync --frozen
+      - save_cache:
+          key: uv-v1-{{ checksum "uv.lock" }}
+          paths:
+            - .venv
+            - ~/.cache/uv
+      - run:
+          name: Verificar formatação (ruff format)
+          command: uv run ruff format --check .
+      - run:
+          name: Verificar linting (ruff check)
+          command: uv run ruff check .
+
+  test-unit:
+    executor: python-executor
+    steps:
+      - checkout
+      - run:
+          name: Instalar uv
+          command: |
+            curl -LsSf https://astral.sh/uv/install.sh | sh
+            echo 'export PATH="$HOME/.cargo/bin:$PATH"' >> $BASH_ENV
+            source $BASH_ENV
+      - restore_cache:
+          keys:
+            - uv-v1-{{ checksum "uv.lock" }}
+            - uv-v1-
+      - run:
+          name: Instalar dependências
+          command: uv sync --frozen
+      - save_cache:
+          key: uv-v1-{{ checksum "uv.lock" }}
+          paths:
+            - .venv
+            - ~/.cache/uv
+      - run:
+          name: Executar testes unitários
+          command: uv run pytest tests/test_helpers.py -v --junitxml=test-results/unit.xml
+      - store_test_results:
+          path: test-results
+
+  test-integration:
+    executor: python-executor
+    steps:
+      - checkout
+      - run:
+          name: Instalar uv
+          command: |
+            curl -LsSf https://astral.sh/uv/install.sh | sh
+            echo 'export PATH="$HOME/.cargo/bin:$PATH"' >> $BASH_ENV
+            source $BASH_ENV
+      - restore_cache:
+          keys:
+            - uv-v1-{{ checksum "uv.lock" }}
+            - uv-v1-
+      - run:
+          name: Instalar dependências
+          command: uv sync --frozen
+      - save_cache:
+          key: uv-v1-{{ checksum "uv.lock" }}
+          paths:
+            - .venv
+            - ~/.cache/uv
+      - run:
+          name: Executar testes de integração (Portal SP)
+          command: uv run pytest tests/test_sp.py -m integration -v --junitxml=test-results/integration-sp.xml
+      - run:
+          name: Executar testes de integração (Portal Federal)
+          command: uv run pytest tests/test_federal.py -m integration -v --junitxml=test-results/integration-federal.xml
+      - store_test_results:
+          path: test-results
+
+  build-docker:
+    docker:
+      - image: cimg/base:stable
+    resource_class: small
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: Build da imagem Docker
+          command: docker build -t dadosgovbr-mcp:${CIRCLE_SHA1} .
+      - run:
+          name: Verificar imagem construída
+          command: |
+            docker images dadosgovbr-mcp
+            docker inspect dadosgovbr-mcp:${CIRCLE_SHA1} | python3 -c "
+            import json, sys
+            info = json.load(sys.stdin)[0]
+            print('Imagem:', info['RepoTags'])
+            print('Tamanho:', round(info['Size'] / 1024**2, 1), 'MB')
+            "
+
+workflows:
+  ci:
+    jobs:
+      - lint
+      - test-unit
+      - test-integration:
+          requires:
+            - test-unit
+      - build-docker:
+          requires:
+            - lint
+            - test-unit
+          filters:
+            branches:
+              only:
+                - main
+                - master
