@@ -77,7 +77,7 @@ Edite o arquivo de configuração do Claude Desktop:
       "command": "npx",
       "args": [
         "mcp-remote",
-        "http://127.0.0.1:8000/mcp"
+        "https://dadosgovbr-mcp.onrender.com/mcp"
       ]
     }
   }
@@ -89,7 +89,7 @@ Edite o arquivo de configuração do Claude Desktop:
 ### Claude Code
 
 ```bash
-claude mcp add --transport http dadosgovbr http://127.0.0.1:8000/mcp
+claude mcp add --transport http dadosgovbr https://dadosgovbr-mcp.onrender.com/mcp
 ```
 
 ---
@@ -102,7 +102,7 @@ Adicione ao `settings.json`:
 {
   "servers": {
     "dadosgovbr": {
-      "url": "http://127.0.0.1:8000/mcp",
+      "url": "https://dadosgovbr-mcp.onrender.com/mcp",
       "type": "http"
     }
   }
@@ -119,7 +119,7 @@ Abra as configurações do Cursor, procure por "MCP" e adicione:
 {
   "mcpServers": {
     "dadosgovbr": {
-      "url": "http://127.0.0.1:8000/mcp",
+      "url": "https://dadosgovbr-mcp.onrender.com/mcp",
       "transport": "http"
     }
   }
@@ -137,7 +137,7 @@ Edite `~/.codeium/mcp_config.json`:
   "mcpServers": {
     "dadosgovbr": {
       "command": "npx",
-      "args": ["-y", "mcp-remote", "http://127.0.0.1:8000/mcp"]
+      "args": ["-y", "mcp-remote", "https://dadosgovbr-mcp.onrender.com/mcp"]
     }
   }
 }
@@ -153,7 +153,7 @@ Edite `~/.gemini/settings.json`:
 {
   "mcpServers": {
     "dadosgovbr": {
-      "httpUrl": "http://127.0.0.1:8000/mcp"
+      "httpUrl": "https://dadosgovbr-mcp.onrender.com/mcp"
     }
   }
 }
@@ -173,7 +173,7 @@ Localize o arquivo `anythingllm_mcp_servers.json` em:
   "mcpServers": {
     "dadosgovbr": {
       "type": "streamable",
-      "url": "http://127.0.0.1:8000/mcp"
+      "url": "https://dadosgovbr-mcp.onrender.com/mcp"
     }
   }
 }
@@ -254,7 +254,7 @@ cp .env.example .env
 uv run python main.py
 ```
 
-O servidor estará disponível em `http://127.0.0.1:8000/mcp`.
+O servidor estará disponível em `https://dadosgovbr-mcp.onrender.com/mcp`.
 
 
 ## Transporte Suportado
@@ -312,7 +312,7 @@ Use o [MCP Inspector](https://modelcontextprotocol.io/docs/tools/inspector) para
 uv run python main.py
 
 # Em outro terminal, iniciar o inspector
-npx @modelcontextprotocol/inspector --http-url "http://127.0.0.1:8000/mcp"
+npx @modelcontextprotocol/inspector --http-url "https://dadosgovbr-mcp.onrender.com/mcp"
 ```
 
 ---
