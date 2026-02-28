@@ -10,7 +10,10 @@ Portais suportados:
 """
 
 import os
+import uvicorn
+from contextlib import asynccontextmanager
 
+from fastapi import FastAPI
 from mcp.server.fastmcp import FastMCP
 
 from tools.sp import (
@@ -32,6 +35,24 @@ from tools.federal import (
     listar_temas_federal,
 )
 
+# ──────────────────────────────────────────────────────────────────────────────
+# Inicialização da aplicação FastAPI
+# ──────────────────────────────────────────────────────────────────────────────
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Gerencia o ciclo de vida da aplicação."""
+    yield
+
+app = FastAPI(title="dadosgovbr-mcp", lifespan=lifespan)
+
+# Health check endpoint
+@app.get("/health")
+async def health():
+    """Health check endpoint."""
+    return {"status": "ok", "service": "dadosgovbr-mcp"}
+
+# Instância do FastMCP
 mcp = FastMCP(
     name="dadosgovbr-mcp",
     instructions=(
@@ -272,12 +293,12 @@ async def federal_listar_temas() -> str:
 # ──────────────────────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
-    host = os.getenv("MCP_HOST", "0.0.0.0")
+    host = os.getenv("MCP_HOST", "127.0.0.1")
     port = int(os.getenv("MCP_PORT", "8000"))
-
-    mcp.run(
-        transport="streamable-http",
+    
+    uvicorn.run(
+        app,
         host=host,
         port=port,
-        path="/mcp",
+        log_level="info",
     )
