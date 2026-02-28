@@ -18,6 +18,20 @@ Ao invés de acessar manualmente os sites, você pode perguntar diretamente ao s
 | Dados Abertos SP | [dadosabertos.sp.gov.br](https://dadosabertos.sp.gov.br) | CKAN 2.x (pública) |
 | Portal Federal | [dados.gov.br](https://dados.gov.br) | CKAN 2.x |
 
+## 🚀 Próximas Features (Em Breve)
+
+Expansão para portais de órgãos federais específicos com dados **mais atualizados** e **documentação técnica detalhada** direto da fonte:
+
+| Portal | URL | Tipo de Dados | Status |
+|--------|-----|---------------|--------|
+| **Banco Central (BCB)** | [dadosabertos.bcb.gov.br](https://dadosabertos.bcb.gov.br) | Taxas de juros, câmbio, indicadores econômicos | 📋 Planejado |
+| **Portal da Transparência** | [portaldatransparencia.gov.br](https://portaldatransparencia.gov.br/download-de-dados) | Gastos públicos, convênios, servidores | 📋 Planejado |
+| **CVM** | [dados.cvm.gov.br](https://dados.cvm.gov.br) | Empresas em bolsa, fundos de investimento, regulamentação | 📋 Planejado |
+| **DataSUS** | [opendatasus.saude.gov.br](https://opendatasus.saude.gov.br) | Saúde, vacinação, registros hospitalares | 📋 Planejado |
+| **Câmara dos Deputados** | [dadosabertos.camara.leg.br](https://dadosabertos.camara.leg.br) | Legislativo, votações, deputados | 📋 Planejado |
+
+Interessado em contribuir? Abra uma [discussão](https://github.com/seu-usuario/dadosgovbr-mcp/discussions) ou um [PR](https://github.com/seu-usuario/dadosgovbr-mcp/pulls)!
+
 ## Ferramentas Disponíveis
 
 ### Portal SP (`dadosabertos.sp.gov.br`)
@@ -242,7 +256,6 @@ uv run python main.py
 
 O servidor estará disponível em `http://127.0.0.1:8000/mcp`.
 
----
 
 ## Transporte Suportado
 
